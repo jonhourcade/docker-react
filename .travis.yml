@@ -1,0 +1,13 @@
+sudo: required # super user privileges
+
+services:
+  - docker # docker cli
+
+before_install:
+  - docker build -t jonhourcade/docker-react -f Dockerfile.dev .
+
+script:
+  # -e means environment variable
+  # CI=true means continuous integration mode
+  # npm run test runs the test suite and exits
+  - docker run -e CI=true jonhourcade/docker-react npm run test
