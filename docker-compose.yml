@@ -1,0 +1,19 @@
+version: "3"
+services:
+  web:
+    build:
+      context: . # build context is the current directory
+      dockerfile: Dockerfile.dev # use the Dockerfile.dev file, default is Dockerfile
+    ports:
+      - 3000:3000 # map port 3000 of host to port 3000 of container
+    volumes:
+      - /app/node_modules # do not use node_modules from host
+      - .:/app # do use everything else from the build context from host
+  tests:
+    build:
+      context: . 
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules  # use node_modules found in the container
+      - .:/app # for everything else, when we reference a file, use the file in the build context
+    command: ["npm", "run", "test"] # override the default command to run tests
