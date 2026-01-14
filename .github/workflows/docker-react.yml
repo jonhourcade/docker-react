@@ -1,21 +1,45 @@
-name: Docker React Tests
+name: docker react tests + deploy  # name shown in the github actions ui
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master ]  # run on pushes to main or master
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, master ]  # run on prs targeting main or master
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  test:  # build and test the app
+    runs-on: ubuntu-latest  # github linux vm with docker installed
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: checkout code
+        uses: actions/checkout@v4  # pull repo code into vm
 
-      - name: Build Docker image
-        run: docker build -t jonhourcade/docker-react -f Dockerfile.dev .
+      - name: build docker image
+        run: docker build -t jonhourcade/docker-react -f dockerfile.dev .  # build dev image
 
-      - name: Run tests
-        run: docker run -e CI=true jonhourcade/docker-react npm run test
+      - name: run tests
+        run: docker run -e CI=true jonhourcade/docker-react npm test  # run tests once and exit
+
+  deploy:  # deploy only if tests pass
+    needs: test  # wait for test job to succeed
+    runs-on: ubuntu-latest  # fresh vm for deploy
+
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'  # only deploy from main/master
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4  # pull repo code again
+
+      - name: create deployment zip
+        run: zip -r deploy.zip . -x "*.git*"  # elastic beanstalk expects a zip
+
+      - name: deploy to elastic beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21  # community eb deploy action
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}  # set in github repo settings
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # set in github repo settings
+          application_name: frontend
+          environment_name: Frontend-env
+          region: us-east-1
+          version_label: ${{ github.sha }}  # unique version per deploy
+          deployment_package: deploy.zip  # zip created above
