@@ -3,7 +3,11 @@ workdir /app
 copy package.json .
 run npm install
 copy . .
-cmd ["npm", "run", "build"]
+# use run, not cmd
+# run is used while the image is being created
+# cmd is used after the container is built
+# this is step 1 in a multi-step build
+run npm run build
 
 from nginx
 # copy everything from /app/build form the the builder stage 
