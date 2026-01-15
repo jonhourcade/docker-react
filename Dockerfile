@@ -10,6 +10,7 @@ copy . .
 run npm run build
 
 from nginx
+expose 80
 # copy everything from /app/build form the the builder stage 
 # to the /usr/share/nginx/html folder in the nginx image
 copy --from=builder /app/build /usr/share/nginx/html
