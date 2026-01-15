@@ -1,3 +1,13 @@
-package-lock.json
+# dependency junk
 node_modules
-yarn.lock
+
+# react build output (prod build happens in Dockerfile)
+build
+
+# git
+.git
+.gitignore
+
+# dev-only docker files
+Dockerfile.dev
+docker-compose-dev.yml
