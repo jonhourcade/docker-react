@@ -39,7 +39,7 @@ jobs:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}  # set in github repo settings
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # set in github repo settings
           application_name: frontend
-          environment_name: Frontend-env
+          environment_name: Frontend-env-1
           region: us-east-1
           version_label: ${{ github.sha }}  # unique version per deploy
           deployment_package: deploy.zip  # zip created above
