@@ -9,6 +9,6 @@ it('renders without crashing', () => {
 
 it('displays the welcome message', () => {
   render(<App />);
-  const welcomeElement = screen.getByText(/Hello world! Welcome to my React application./i);
+  const welcomeElement = screen.getByText(/I was changed on the feature branch!/i);
   expect(welcomeElement).toBeInTheDocument();
 });
